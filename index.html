@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Attendance Log</title>
+<style>
+  :root{
+    --ink:#12182b;
+    --paper:#f6f4ee;
+    --line:#d9d4c6;
+    --navy:#1f2a4d;
+    --navy-2:#334268;
+    --in:#2f6f4e;
+    --in-bg:#e7f2ea;
+    --out:#9a5a1f;
+    --out-bg:#f5ead9;
+    --mono: 'Courier New', Courier, monospace;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:var(--paper);
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 28px 28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    font-family: Georgia, 'Times New Roman', serif;
+    color:var(--ink);
+  }
+  .card{
+    width:100%;
+    max-width:480px;
+    background:#fffdf9;
+    border:1px solid var(--line);
+    box-shadow: 0 1px 0 var(--line), 0 18px 40px -24px rgba(18,24,43,0.35);
+    position:relative;
+  }
+  .card::before{
+    content:"";
+    position:absolute;
+    top:14px; left:14px; right:14px; bottom:14px;
+    border:1px solid var(--line);
+    pointer-events:none;
+  }
+  .header{
+    padding:28px 32px 18px;
+    border-bottom:1px solid var(--line);
+  }
+  .eyebrow{
+    font-family: var(--mono);
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--navy-2);
+  }
+  h1{
+    margin:6px 0 0;
+    font-size:26px;
+    font-weight:400;
+    letter-spacing:.01em;
+  }
+  .clock{
+    margin-top:10px;
+    font-family:var(--mono);
+    font-size:13px;
+    color:#5a5443;
+  }
+  form{ padding:24px 32px 8px; }
+  .field{ margin-bottom:18px; }
+  label{
+    display:block;
+    font-family: var(--mono);
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:#5a5443;
+    margin-bottom:6px;
+  }
+  input[type=text], input[type=tel], select{
+    width:100%;
+    padding:11px 12px;
+    border:1px solid var(--line);
+    background:#fff;
+    font-family:Georgia, serif;
+    font-size:15px;
+    color:var(--ink);
+  }
+  input:focus, select:focus{
+    outline:2px solid var(--navy);
+    outline-offset:1px;
+  }
+  .status-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 32px;
+    font-family:var(--mono);
+    font-size:12.5px;
+    color:#5a5443;
+    border-top:1px dashed var(--line);
+    border-bottom:1px dashed var(--line);
+    min-height:20px;
+  }
+  .dot{
+    width:8px; height:8px; border-radius:50%;
+    background:#c9c2ac; flex:0 0 auto;
+  }
+  .dot.ok{ background:var(--in); }
+  .dot.wait{ background:var(--out); animation:pulse 1.2s infinite; }
+  @keyframes pulse{ 50%{opacity:.35;} }
+  .actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    padding:20px 32px 28px;
+  }
+  button{
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    padding:14px 10px;
+    border:1px solid var(--ink);
+    background:var(--ink);
+    color:#fffdf9;
+    cursor:pointer;
+    transition:transform .08s ease, opacity .15s ease;
+  }
+  button:active{ transform:translateY(1px); }
+  button:disabled{ opacity:.4; cursor:not-allowed; }
+  #signOutBtn{
+    background:transparent;
+    color:var(--ink);
+  }
+  .result{
+    margin:0 32px 26px;
+    padding:14px 16px;
+    border:1px solid var(--line);
+    font-family:var(--mono);
+    font-size:12.5px;
+    line-height:1.6;
+    display:none;
+  }
+  .result.show{ display:block; }
+  .result.in{ border-color:var(--in); background:var(--in-bg); color:#1f4d34; }
+  .result.out{ border-color:var(--out); background:var(--out-bg); color:#6b3d13; }
+  .result.err{ border-color:#a33; background:#fbeaea; color:#7a2323; }
+  .result b{ display:block; font-family:Georgia,serif; font-size:14px; margin-bottom:4px; letter-spacing:0; text-transform:none; }
+  footer{
+    text-align:center;
+    font-family:var(--mono);
+    font-size:10.5px;
+    color:#9c9680;
+    letter-spacing:.06em;
+    padding-bottom:10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="header">
+    <div class="eyebrow">Attendance Register</div>
+    <h1>Sign In / Sign Out</h1>
+    <div class="clock" id="clock">—</div>
+  </div>
+
+  <form id="logForm">
+    <div class="field">
+      <label for="name">Full name</label>
+      <input type="text" id="name" required placeholder="e.g. Priya Sharma" autocomplete="name">
+    </div>
+    <div class="field">
+      <label for="role">Role</label>
+      <select id="role" required>
+        <option value="" disabled selected>Select role</option>
+        <option value="Student">Student</option>
+        <option value="Teacher">Teacher</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="phone">Phone number</label>
+      <input type="tel" id="phone" required placeholder="e.g. +91 98765 43210" autocomplete="tel">
+    </div>
+  </form>
+
+  <div class="status-row">
+    <span class="dot" id="locDot"></span>
+    <span id="locText">Location: not yet requested</span>
+  </div>
+
+  <div class="actions">
+    <button type="button" id="signInBtn">Sign In</button>
+    <button type="button" id="signOutBtn">Sign Out</button>
+  </div>
+
+  <div class="result" id="result"></div>
+</div>
+
+<footer>records are written to the connected Google Sheet</footer>
+
+<script>
+  // ======= CONFIGURE THIS =======
+  // Paste the Web App URL you get after deploying the Apps Script (see instructions).
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxD-RwS8LikaPReMIjNnIft-ETpr_2mpzEuxtfxnHlJiYGmPMqOMOgJwKcB72seu4nV/exec";
+  // ================================
+
+  const clockEl = document.getElementById('clock');
+  function tickClock(){
+    const now = new Date();
+    clockEl.textContent = now.toLocaleString(undefined, {
+      weekday:'short', year:'numeric', month:'short', day:'numeric',
+      hour:'2-digit', minute:'2-digit', second:'2-digit'
+    });
+  }
+  tickClock();
+  setInterval(tickClock, 1000);
+
+  const locDot = document.getElementById('locDot');
+  const locText = document.getElementById('locText');
+  const resultBox = document.getElementById('result');
+  const signInBtn = document.getElementById('signInBtn');
+  const signOutBtn = document.getElementById('signOutBtn');
+
+  function getLocation(){
+    return new Promise((resolve) => {
+      if(!navigator.geolocation){
+        locDot.className = 'dot';
+        locText.textContent = 'Location: not supported by this browser';
+        resolve(null);
+        return;
+      }
+      locDot.className = 'dot wait';
+      locText.textContent = 'Location: requesting permission…';
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const { latitude, longitude, accuracy } = pos.coords;
+          locDot.className = 'dot ok';
+          locText.textContent = `Location: ${latitude.toFixed(5)}, ${longitude.toFixed(5)} (±${Math.round(accuracy)}m)`;
+          resolve({ latitude, longitude, accuracy });
+        },
+        (err) => {
+          locDot.className = 'dot';
+          locText.textContent = 'Location: permission denied or unavailable';
+          resolve(null);
+        },
+        { enableHighAccuracy: true, timeout: 8000 }
+      );
+    });
+  }
+
+  function validate(){
+    const name = document.getElementById('name').value.trim();
+    const role = document.getElementById('role').value;
+    const phone = document.getElementById('phone').value.trim();
+    if(!name || !role || !phone){
+      showResult('err', 'Missing details', 'Please fill in name, role, and phone number before signing in or out.');
+      return null;
+    }
+    return { name, role, phone };
+  }
+
+  function showResult(type, title, msg){
+    resultBox.className = `result show ${type}`;
+    resultBox.innerHTML = `<b>${title}</b>${msg}`;
+  }
+
+  async function submitEntry(action){
+    const details = validate();
+    if(!details) return;
+
+    signInBtn.disabled = true;
+    signOutBtn.disabled = true;
+    showResult(action === 'Sign In' ? 'in' : 'out', 'Working…', 'Getting location and recording entry.');
+
+    const loc = await getLocation();
+    const now = new Date();
+
+    const payload = {
+      name: details.name,
+      role: details.role,
+      phone: details.phone,
+      action: action,
+      timestamp: now.toISOString(),
+      dateReadable: now.toLocaleDateString(),
+      timeReadable: now.toLocaleTimeString(),
+      latitude: loc ? loc.latitude : '',
+      longitude: loc ? loc.longitude : '',
+      accuracy: loc ? loc.accuracy : ''
+    };
+
+    try{
+      if(SCRIPT_URL.includes('PASTE_YOUR_APPS_SCRIPT')){
+        throw new Error('CONFIG');
+      }
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors', // Apps Script web apps don't return CORS headers to fetch
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      });
+      showResult(
+        action === 'Sign In' ? 'in' : 'out',
+        `${action} recorded — ${details.name}`,
+        `${payload.dateReadable} at ${payload.timeReadable}${loc ? ` · ${payload.latitude.toFixed(5)}, ${payload.longitude.toFixed(5)}` : ' · location unavailable'}`
+      );
+    }catch(e){
+      if(e.message === 'CONFIG'){
+        showResult('err', 'Not connected yet', 'Set SCRIPT_URL in the code to your deployed Apps Script Web App URL, then try again.');
+      } else {
+        showResult('err', 'Could not reach the sheet', 'Check your internet connection and the deployed script URL, then try again.');
+      }
+    } finally {
+      signInBtn.disabled = false;
+      signOutBtn.disabled = false;
+    }
+  }
+
+  signInBtn.addEventListener('click', () => submitEntry('Sign In'));
+  signOutBtn.addEventListener('click', () => submitEntry('Sign Out'));
+</script>
+
+</body>
+</html>
