@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZSSF Attendance — Administrator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            font-family: 'Poppins', sans-serif;
+            color: #fff;
+            background: #0c2417 url('4.jpg') center / cover no-repeat fixed;
+        }
+        .card {
+            width: min(100%, 580px);
+            padding: 36px;
+            border: 1px solid rgba(255,255,255,.18);
+            border-radius: 24px;
+            background: rgba(10,30,20,.84);
+            box-shadow: 0 25px 50px rgba(0,0,0,.6);
+            backdrop-filter: blur(12px);
+        }
+        h1 {
+            margin: 0 0 10px;
+            text-align: center;
+            font-family: 'Oswald', sans-serif;
+            color: #ffeb3b;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .intro { margin: 0 auto 24px; text-align: center; color: #e0e0e0; line-height: 1.6; }
+        .steps { margin: 0 0 26px; padding-left: 22px; color: #f5f5f5; line-height: 1.8; }
+        .button {
+            display: block;
+            padding: 14px 18px;
+            text-align: center;
+            border-radius: 12px;
+            background: #ffeb3b;
+            color: #0c2417;
+            font-weight: 700;
+            text-decoration: none;
+            text-transform: uppercase;
+        }
+        .button:hover { background: #f4d03f; }
+        .secondary { margin-top: 14px; color: #ffeb3b; text-align: center; }
+        .secondary a { color: inherit; }
+        @media (max-width: 600px) {
+            body { padding: 12px; background-attachment: scroll; }
+            .card { padding: 26px 20px; border-radius: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <main class="card">
+        <h1>Administrator Access</h1>
+        <p class="intro">Sign in with an approved Google account to open the private attendance records.</p>
+        <ol class="steps">
+            <li>Open the attendance spreadsheet and complete Google sign-in if requested.</li>
+            <li>Use the <strong>Sessions</strong> tab for one complete record per visit.</li>
+            <li>Use Google Sheets filters to select records, then choose File → Print → Save as PDF.</li>
+        </ol>
+        <a class="button" href="https://docs.google.com/spreadsheets/d/1sfxU4xqvcG36P9jjw-xlIS4QlS1lDgPu4qpAiknoNKQ/edit?gid=1483215707#gid=1483215707">Open Attendance Sheet</a>
+        <p class="secondary"><a href="attendance.html">Back to public sign-in</a></p>
+    </main>
+</body>
+</html>

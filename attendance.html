@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZSSF Event Registration — Sign In</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            background-color: #0c2417; /* Solid green fallback color while loading */
+
+            background-image: url('4.jpg');
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+
+            padding: 180px 20px 80px 20px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                min-height: 100svh;
+                background-attachment: scroll;
+                background-position: center center;
+                padding: 40px 12px 32px;
+            }
+
+            .form-container {
+                padding: 24px 18px;
+                border-radius: 18px;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 550px;
+            background: rgba(10, 30, 20, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+            color: #ffffff;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header h2 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ffeb3b;
+            margin-bottom: 6px;
+        }
+
+        .form-header p {
+            font-size: 0.9rem;
+            color: #e0e0e0;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper input,
+        .input-wrapper select {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+            padding: 8px 8px 8px 32px;
+            color: #ffffff;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-wrapper select option {
+            background-color: #0c2417;
+            color: #ffffff;
+        }
+
+        .input-wrapper input:focus,
+        .input-wrapper select:focus {
+            border-bottom-color: #ffeb3b;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 4px;
+            bottom: 10px;
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.7);
+            stroke-width: 2;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 25px;
+        }
+
+        .submit-btn {
+            flex: 1;
+            border: none;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background 0.2s ease, transform 0.1s ease, opacity 0.2s ease;
+        }
+
+        .btn-signin {
+            background: #ffeb3b;
+            color: #0c2417;
+        }
+
+        .btn-signin:hover {
+            background: #f4d03f;
+        }
+
+        .btn-signin:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-signout {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-signout:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Status message banner (hidden by default) */
+        .status-msg {
+            display: none;
+            margin-top: 20px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .status-msg.show {
+            display: block;
+        }
+
+        .status-msg.info {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+        }
+
+        .status-msg.success {
+            background: rgba(76, 175, 80, 0.18);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+            color: #c8f7cc;
+        }
+
+        .status-msg.error {
+            background: rgba(244, 67, 54, 0.18);
+            border: 1px solid rgba(244, 67, 54, 0.5);
+            color: #ffcdd2;
+        }
+
+        .field-error {
+            color: #ff8a80;
+            font-size: 0.8rem;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .field-error.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <div class="form-header">
+            <h2>Event Registration</h2>
+            <p>Register your attendance below.</p>
+        </div>
+
+        <form id="attendanceForm" novalidate>
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg>
+                    <input type="text" id="full_name" name="full_name" placeholder="Enter your full name" required>
+                </div>
+                <div class="field-error" id="err_full_name">Please enter your full name.</div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24">
+                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+                        <line x1="12" y1="18" x2="12.01" y2="18" />
+                    </svg>
+                    <input type="tel" id="phone" name="phone" placeholder="e.g. +255..." required>
+                </div>
+                <div class="field-error" id="err_phone">Please enter a valid phone number.</div>
+            </div>
+
+            <div class="form-group">
+                <label for="role">Role</label>
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                        <rect x="7" y="9" width="3" height="5" />
+                        <line x1="14" y1="10" x2="18" y2="10" />
+                        <line x1="14" y1="14" x2="18" y2="14" />
+                    </svg>
+                    <select id="role" name="role" required>
+                        <option value="" disabled selected hidden>Select your role</option>
+                        <option value="Teacher">Teacher</option>
+                        <option value="User">User</option>
+                        <option value="Guest">Guest</option>
+                    </select>
+                </div>
+                <div class="field-error" id="err_role">Please select a role.</div>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" id="signInBtn" class="submit-btn btn-signin">Sign In</button>
+                <a href="session.html" class="submit-btn btn-signout">Sign Out</a>
+            </div>
+        </form>
+
+        <div id="statusMsg" class="status-msg" role="status" aria-live="polite"></div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        const form = document.getElementById('attendanceForm');
+        const signInBtn = document.getElementById('signInBtn');
+        const statusMsg = document.getElementById('statusMsg');
+
+        function showStatus(message, type) {
+            statusMsg.textContent = message;
+            statusMsg.className = 'status-msg show ' + type;
+        }
+
+        function clearFieldErrors() {
+            document.querySelectorAll('.field-error').forEach(el => el.classList.remove('show'));
+        }
+
+        function validateForm(data) {
+            let valid = true;
+            if (!data.full_name || data.full_name.trim().length < 2) {
+                document.getElementById('err_full_name').classList.add('show');
+                valid = false;
+            }
+            // Basic phone check: digits, spaces, +, - allowed, at least 7 digits total
+            const digitCount = (data.phone.match(/\d/g) || []).length;
+            if (!data.phone || digitCount < 7) {
+                document.getElementById('err_phone').classList.add('show');
+                valid = false;
+            }
+            if (!data.role) {
+                document.getElementById('err_role').classList.add('show');
+                valid = false;
+            }
+            return valid;
+        }
+
+        function getLocation() {
+            return new Promise((resolve) => {
+                if (!navigator.geolocation) {
+                    resolve({ lat: null, lng: null, accuracy: null, locationError: 'unsupported' });
+                    return;
+                }
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => {
+                        resolve({
+                            lat: pos.coords.latitude,
+                            lng: pos.coords.longitude,
+                            accuracy: pos.coords.accuracy,
+                            locationError: null
+                        });
+                    },
+                    (err) => {
+                        resolve({ lat: null, lng: null, accuracy: null, locationError: err.message || 'denied' });
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            });
+        }
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            clearFieldErrors();
+            statusMsg.className = 'status-msg';
+
+            const data = {
+                full_name: document.getElementById('full_name').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                role: document.getElementById('role').value
+            };
+
+            if (!validateForm(data)) {
+                return;
+            }
+
+            if (!isApiConfigured()) {
+                showStatus(getApiNotConfiguredMessage(), 'error');
+                return;
+            }
+
+            signInBtn.disabled = true;
+            signInBtn.textContent = 'Getting location...';
+            showStatus('Requesting location access — please allow it in your browser.', 'info');
+
+            const loc = await getLocation();
+
+            signInBtn.textContent = 'Signing in...';
+
+            const payload = {
+                action: 'signin',
+                full_name: data.full_name,
+                phone: data.phone,
+                role: data.role,
+                lat: loc.lat,
+                lng: loc.lng,
+                accuracy: loc.accuracy,
+                locationError: loc.locationError
+            };
+
+            try {
+                const response = await fetch(APP_CONFIG.API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    const locationText = result.locationStatus === 'VALID'
+                        ? ' Location verified.'
+                        : result.locationStatus === 'NOT_CONFIGURED'
+                            ? ' Location verification is not configured yet.'
+                            : '';
+                    showStatus(
+                        'Signed in successfully! Your Attendance ID is ' + result.attendanceId +
+                        '. Keep your phone number handy to sign out later.' + locationText,
+                        'success'
+                    );
+                    form.reset();
+                } else {
+                    showStatus(result.message || 'Sign-in failed. Please try again.', 'error');
+                }
+            } catch (err) {
+                showStatus('Could not reach the server. Please check your connection and try again.', 'error');
+            } finally {
+                signInBtn.disabled = false;
+                signInBtn.textContent = 'Sign In';
+            }
+        });
+    </script>
+</body>
+</html>

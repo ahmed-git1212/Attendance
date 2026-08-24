@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZSSF Event Registration — Sign Out</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            background-color: #0c2417;
+
+            background-image: url('4.jpg');
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+
+            padding: 180px 20px 80px 20px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                min-height: 100svh;
+                background-attachment: scroll;
+                background-position: center center;
+                padding: 40px 12px 32px;
+            }
+
+            .form-container {
+                padding: 24px 18px;
+                border-radius: 18px;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 550px;
+            background: rgba(10, 30, 20, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 35px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+            color: #ffffff;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-header h2 {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ffeb3b;
+            margin-bottom: 6px;
+        }
+
+        .form-header p {
+            font-size: 0.9rem;
+            color: #e0e0e0;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.5);
+            padding: 8px 8px 8px 32px;
+            color: #ffffff;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-wrapper input:focus {
+            border-bottom-color: #ffeb3b;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 4px;
+            bottom: 10px;
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.7);
+            stroke-width: 2;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 16px;
+            margin-top: 25px;
+        }
+
+        .submit-btn {
+            flex: 1;
+            border: none;
+            padding: 14px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: background 0.2s ease, transform 0.1s ease, opacity 0.2s ease;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-signin {
+            background: #ffeb3b;
+            color: #0c2417;
+        }
+
+        .btn-signin:hover {
+            background: #f4d03f;
+        }
+
+        .btn-signin:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-signout {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-signout:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .status-msg {
+            display: none;
+            margin-top: 20px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .status-msg.show {
+            display: block;
+        }
+
+        .status-msg.info {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+        }
+
+        .status-msg.success {
+            background: rgba(76, 175, 80, 0.18);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+            color: #c8f7cc;
+        }
+
+        .status-msg.error {
+            background: rgba(244, 67, 54, 0.18);
+            border: 1px solid rgba(244, 67, 54, 0.5);
+            color: #ffcdd2;
+        }
+
+        .field-error {
+            color: #ff8a80;
+            font-size: 0.8rem;
+            margin-top: 6px;
+            display: none;
+        }
+
+        .field-error.show {
+            display: block;
+        }
+
+        /* Session detail card shown after lookup */
+        .session-card {
+            display: none;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            padding: 18px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .session-card.show {
+            display: block;
+        }
+
+        .session-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .session-row:last-child {
+            border-bottom: none;
+        }
+
+        .session-row span:first-child {
+            color: #cfd8d3;
+        }
+
+        .session-row span:last-child {
+            font-weight: 500;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <div class="form-header">
+            <h2>Sign Out</h2>
+            <p>Enter your phone number to find your active session.</p>
+        </div>
+
+        <!-- Step 1: Lookup -->
+        <form id="lookupForm" novalidate>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24">
+                        <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+                        <line x1="12" y1="18" x2="12.01" y2="18" />
+                    </svg>
+                    <input type="tel" id="phone" name="phone" placeholder="e.g. +255..." required>
+                </div>
+                <div class="field-error" id="err_phone">Please enter a valid phone number.</div>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" id="lookupBtn" class="submit-btn btn-signin">Find My Session</button>
+                <a href="attendance.html" class="submit-btn btn-signout">Back to Sign In</a>
+            </div>
+        </form>
+
+        <!-- Step 2: Confirm + Sign Out (hidden until lookup succeeds) -->
+        <div id="sessionCard" class="session-card">
+            <div class="session-row"><span>Attendance ID</span><span id="s_id">—</span></div>
+            <div class="session-row"><span>Name</span><span id="s_name">—</span></div>
+            <div class="session-row"><span>Role</span><span id="s_role">—</span></div>
+            <div class="session-row"><span>Signed In</span><span id="s_time">—</span></div>
+        </div>
+
+        <div id="signOutBtnWrap" class="btn-group hidden">
+            <button type="button" id="signOutBtn" class="submit-btn btn-signin">Confirm Sign Out</button>
+        </div>
+
+        <div id="statusMsg" class="status-msg" role="status" aria-live="polite"></div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        const lookupForm = document.getElementById('lookupForm');
+        const lookupBtn = document.getElementById('lookupBtn');
+        const statusMsg = document.getElementById('statusMsg');
+        const sessionCard = document.getElementById('sessionCard');
+        const signOutBtnWrap = document.getElementById('signOutBtnWrap');
+        const signOutBtn = document.getElementById('signOutBtn');
+
+        let currentAttendanceId = null;
+        let currentPhone = null;
+
+        function getLocation() {
+            return new Promise((resolve) => {
+                if (!navigator.geolocation) {
+                    resolve({ lat: null, lng: null, accuracy: null, locationError: 'unsupported' });
+                    return;
+                }
+                navigator.geolocation.getCurrentPosition(
+                    (pos) => resolve({
+                        lat: pos.coords.latitude,
+                        lng: pos.coords.longitude,
+                        accuracy: pos.coords.accuracy,
+                        locationError: null
+                    }),
+                    (err) => resolve({
+                        lat: null,
+                        lng: null,
+                        accuracy: null,
+                        locationError: err.message || 'denied'
+                    }),
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                );
+            });
+        }
+
+        function showStatus(message, type) {
+            statusMsg.textContent = message;
+            statusMsg.className = 'status-msg show ' + type;
+        }
+
+        function resetSessionView() {
+            sessionCard.classList.remove('show');
+            signOutBtnWrap.classList.add('hidden');
+            currentAttendanceId = null;
+        }
+
+        lookupForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            document.getElementById('err_phone').classList.remove('show');
+            statusMsg.className = 'status-msg';
+            resetSessionView();
+
+            const phone = document.getElementById('phone').value.trim();
+            const digitCount = (phone.match(/\d/g) || []).length;
+            if (!phone || digitCount < 7) {
+                document.getElementById('err_phone').classList.add('show');
+                return;
+            }
+
+            if (!isApiConfigured()) {
+                showStatus(getApiNotConfiguredMessage(), 'error');
+                return;
+            }
+
+            lookupBtn.disabled = true;
+            lookupBtn.textContent = 'Searching...';
+
+            try {
+                const url = APP_CONFIG.API_URL + '?action=getSession&phone=' + encodeURIComponent(phone);
+                const response = await fetch(url, { method: 'GET' });
+                const result = await response.json();
+
+                if (result.success && result.session) {
+                    currentAttendanceId = result.session.attendanceId;
+                    currentPhone = phone;
+
+                    document.getElementById('s_id').textContent = result.session.attendanceId;
+                    document.getElementById('s_name').textContent = result.session.fullName;
+                    document.getElementById('s_role').textContent = result.session.role;
+                    document.getElementById('s_time').textContent = result.session.signInTime;
+
+                    sessionCard.classList.add('show');
+                    signOutBtnWrap.classList.remove('hidden');
+                    showStatus('Active session found. Confirm below to sign out.', 'info');
+                } else {
+                    showStatus(result.message || 'No active session found for this phone number.', 'error');
+                }
+            } catch (err) {
+                showStatus('Could not reach the server. Please check your connection and try again.', 'error');
+            } finally {
+                lookupBtn.disabled = false;
+                lookupBtn.textContent = 'Find My Session';
+            }
+        });
+
+        signOutBtn.addEventListener('click', async function () {
+            if (!currentAttendanceId || !currentPhone) return;
+
+            if (!isApiConfigured()) {
+                showStatus(getApiNotConfiguredMessage(), 'error');
+                return;
+            }
+
+            signOutBtn.disabled = true;
+            signOutBtn.textContent = 'Getting location...';
+            showStatus('Requesting location access before signing out.', 'info');
+            const loc = await getLocation();
+            signOutBtn.textContent = 'Signing out...';
+
+            try {
+                const response = await fetch(APP_CONFIG.API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'signout',
+                        attendanceId: currentAttendanceId,
+                        phone: currentPhone,
+                        lat: loc.lat,
+                        lng: loc.lng,
+                        accuracy: loc.accuracy,
+                        locationError: loc.locationError
+                    })
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    const locationText = result.locationStatus === 'VALID'
+                        ? ' Location verified.'
+                        : result.locationStatus === 'NOT_CONFIGURED'
+                            ? ' Location verification is not configured yet.'
+                            : '';
+                    showStatus(
+                        'Signed out successfully. Duration: ' + result.durationMinutes + ' minutes. Thank you!' + locationText,
+                        'success'
+                    );
+                    resetSessionView();
+                    lookupForm.reset();
+                } else {
+                    showStatus(result.message || 'Sign-out failed. Please try again.', 'error');
+                }
+            } catch (err) {
+                showStatus('Could not reach the server. Please check your connection and try again.', 'error');
+            } finally {
+                signOutBtn.disabled = false;
+                signOutBtn.textContent = 'Confirm Sign Out';
+            }
+        });
+    </script>
+</body>
+</html>
