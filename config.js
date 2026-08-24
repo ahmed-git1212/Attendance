@@ -8,7 +8,7 @@ function isApiConfigured() {
   return Boolean(
     APP_CONFIG.API_URL &&
     APP_CONFIG.API_URL.startsWith('https://script.google.com/' ) &&
-    !APP_CONFIG.API_URL.includes('https://script.google.com/macros/s/AKfycbxwcMG1u_k5cs3rYAZIYkjFSXtfD6As83aiYF4lc2Nsrrn1h8c87KQYXTLkFlryQH5x/exec' )
+    !APP_CONFIG.API_URL.includes('https://script.google.com/macros/s/AKfycbwVxhU1nMyNuBaJnCUs_LIG-F6_U_-4CfXWWwjUFsGOFZ0DXH2EueGnfK7-B-TkCR0F/exec' )
 
   );
 }
